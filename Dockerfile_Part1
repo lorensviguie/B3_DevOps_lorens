@@ -1,0 +1,5 @@
+FROM rust:1.67
+WORKDIR /opt
+COPY ./api_rust .
+RUN cargo build --release
+CMD export "PING_LISTEN_PORT=8001" && ./target/release/B3_DevOps_lorens

@@ -1,0 +1,21 @@
+FROM rust:1.67 AS builder
+
+WORKDIR /opt
+COPY ./api_rust .
+CMD [ "cargo build --release"]
+
+FROM alpine:latest
+WORKDIR /opt
+ENV PING_LISTEN_PORT=8001
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+COPY --from=builder /opt/target/release/B3_DevOps_lorens /opt/api_rust
+RUN chown appuser:appgroup /opt/api_rust
+USER appuser
+CMD [ "/opt/api_rust" ]
+
+# Bonus Perso: Image finale minimale
+#FROM scratch
+#ENV PING_LISTEN_PORT=8001
+#COPY --from=builder /opt/target/release/B3_DevOps_lorens /api_rust
+#
+#ENTRYPOINT ["/api_rust"]
